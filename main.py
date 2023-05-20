@@ -74,7 +74,8 @@ def register():
     Password = input("Password : ")
     PasswordAgain = input("Password Again : ")
     if (Password == PasswordAgain):
-        id = random.seed(12523463486237968729836523238)
+        random.seed(12523463486237968729836523238)
+        id = random.random()
         NewUser = Client(id, Name, Username, Password)
         data['client'].append({
             'id': NewUser.id,
@@ -100,7 +101,7 @@ def mainMenuAdmin(adminCheck):
         print("dang nhap user thanh cong")
 def Main():
     menuLogin()
-    mainMenuClient()
-    mainMenuAdmin()
+
+
 
 Main()
