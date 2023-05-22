@@ -4,25 +4,10 @@ import re
 import bcrypt
 import os
 
-
-def check_specical_charecter(username):
-    pattern = r'[^\w\s]'
-    if re.search(pattern,username):
-        return True
-    else:
-        return False
-
-
-# mã hóa mật khẩu sử dụng hàm thư viện đẻ băm mật khẩu ngẫu nhiên và được mã hóa bởi utf-8
-# 
-def hash_password(password):
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'),salt)
-    return hashed_password
-
 data = {}
 data['client'] = []
 adminCheck = False
+UserID = 0.00
 class Admin:
     def __init__(self, id, name, username, password):
         self.id = id
@@ -44,6 +29,8 @@ class Client:
         self.name = name
         self.username = username
         self.password = password
+    def __init__(self,):
+        pass
 
 class Vehical:
     def __init__(self, id, name, status, listClient, cost, quantity, time):
@@ -63,6 +50,22 @@ class Vehical:
         self.quantity = quantity
 
 
+def check_specical_charecter(username):
+    pattern = r'[^\w\s]'
+    if re.search(pattern,username):
+        return True
+    else:
+        return False
+
+
+# mã hóa mật khẩu sử dụng hàm thư viện đẻ băm mật khẩu ngẫu nhiên và được mã hóa bởi utf-8
+#
+def hash_password(password):
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'),salt)
+    return hashed_password
+
+ClientObj = Client()
 def login(adminCheck):
     print("Đăng nhập")
     Username = input("Username : ")
@@ -76,15 +79,16 @@ def login(adminCheck):
                     print("Admin login succesfully !")
                     adminCheck = True
                     return adminCheck
-
     else:
         with open('data/client.txt') as json_file:
             data = json.load(json_file)
             for p in data['client']:
                 if p['username'] == Username and bcrypt.checkpw(Password.encode('utf-8'),p['password'].encode('utf-8')):
                     print("Login succesfully !")
+                    p['id'] == UserID
+                    ClientObj.id = p['id']
+                    ClientObj.name = p['name']
                     return adminCheck
-# phần login đã làm xong 90% chưa có check kí tự đặc biệt và giải mã password
 
 def register():
     print("Đăng ký")
@@ -178,13 +182,28 @@ def mainMenuClient():
 def mainMenuAdmin():
     pass    # thêm switch case và các hàm vào
 
+def addMoreMoney():
+    money = int(input("Nhập số tiền muốn thêm: "))
+    ClientObj.money = money
+    print("Thêm thành công")
+#     update vào trong file client thay thế vị trí client cũ( ghi đè sao cho đúng vị trí)
+def addNewVihical():
+    pass
+def editVehical():
+    pass
+def deleteVehical():
+    pass
+
+def showAllClient():
+    pass
+
 def Main(adminCheck):
     menuLogin()
     if(adminCheck == True):
-        print("Dang nhap admin thanh cong")
+        print("Đăng nhập admin thành công")
         mainMenuAdmin()
     elif(adminCheck == False):
-        print("dang nhap user thanh cong")
+        print("Đăng nhập user thành công")
         mainMenuClient()
     # showAllCilent()
 

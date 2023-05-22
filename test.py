@@ -28,3 +28,8 @@ with open('data.txt') as json_file:
         print('Website: ' + p['website'])
         print('From: ' + p['from'])
         print('')
+with open('data.txt') as outfile:
+    data = json.load(json_file)
+    for p in data['people']:
+        p['name'] = "Ttan"
+    json.dump(data,outfile)
