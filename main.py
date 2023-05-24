@@ -78,7 +78,7 @@ def login(adminCheck):
                     return adminCheck
 
     else:
-        with open('data/client.txt') as json_file:
+        with open('data/client/'+Username+'.txt') as json_file:
             data = json.load(json_file)
             for p in data['client']:
                 if p['username'] == Username and bcrypt.checkpw(Password.encode('utf-8'),p['password'].encode('utf-8')):
@@ -103,27 +103,26 @@ def register():
             # tạo id random để đảm bảo các client ko bị trùng lặp
             NewUser = Client(id, Name, Username, hashed_password_str)
             # lấy thông tin về tệp và lấy kích thước tệp đó
-            open("data/client/" + NewUser.name + ".txt")
-            if os.stat("data/client/"+NewUser.name+".txt").st_size == 0:
-                with open("data/client/"+NewUser.name+".txt", 'w') as outfile:
-                    json.dump(data, outfile)
+            if os.path.exists("data/client/"+NewUser.username+".txt"):
+                print("Tài khoản này đã được đăng ký xin vui lòng đăng ký tài khoản khác")
+                break
             else:
+                open("data/client/" + NewUser.username + ".txt",'w')
                 #  sử dụng try except để bắt lỗi và sử lý ngoại lệ 
-               try:
-                    with open("data/client/"+NewUser.name+".txt") as json_file:
-                        txt1 = json_file.read() # lấy dữ liệu trong file
-                        jsonObj = json.loads(txt1) # chuyển đổi nôi dụng sang từ chuỗi json sang đối tượng
-                        jsonObj['client'].append({
+                try:
+                    with open("data/client/"+NewUser.username+".txt") as json_file:
+                        data['client'].append({
                             "id": NewUser.id,
                             "name": NewUser.name,
                             "username": NewUser.username,
                             "password": NewUser.password})
-                    with open("data/client/"+NewUser.name+".txt", 'w') as outfile:
-                        json.dump(jsonObj, outfile)
-               except json.decoder.JSONDecodeError:
+                    with open("data/client/"+NewUser.username+".txt", 'w') as outfile:
+                        json.dump(data, outfile)
+                        print("Đăng ký thành công")
+                except json.decoder.JSONDecodeError:
                 #    nếu có lỗi xảy ra khi chuyển đổi nọi dụng của file sang đối tượng json
                 #    tạo luôn đối tượng json mới lưu vào file
-                   with open("data/client/"+NewUser.name+".txt",'w') as outfile:
+                    with open("data/client/"+NewUser.username+".txt",'w') as outfile:
                        json.dump(data,outfile)
             break
         else:
@@ -154,10 +153,10 @@ def mainMenuAdmin():
 def Main(adminCheck):
     menuLogin()
     if(adminCheck == True):
-        print("Dang nhap admin thanh cong")
+        # đăng nhập admin
         mainMenuAdmin()
     elif(adminCheck == False):
-        print("dang nhap user thanh cong")
+        # đăng nhập user
         mainMenuClient()
     # showAllCilent()
 
