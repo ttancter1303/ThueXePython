@@ -3,13 +3,53 @@ import random
 import re 
 import bcrypt
 import os
-import Client as Client
-import Admin as Admin
-import Vehical as Vehical
+
 data = {}
 data['client'] = []
 adminCheck = False
 UserID = 0.00
+class Admin:
+    def __init__(self, id, name, username, password):
+        self.id = id
+        self.name = name
+        self.username = username
+        self.password = password
+#NTUYNJQXMQ
+
+class Client:
+    def __init__(self,id,name,username,password,money,ListVehical):
+        self.id = id
+        self.name = name
+        self.username = username
+        self.password = password
+        self.money = money
+        self.ListVehical = ListVehical
+    def __init__(self, id, name, username, password):
+        self.id = id
+        self.name = name
+        self.username = username
+        self.password = password
+    def __init__(self,):
+        pass
+
+class Vehical:
+    def __init__(self, id, name, status, listClient, cost, quantity, time):
+        self.id = id
+        self.name = name
+        self.status = status
+        self.listClient = listClient
+        self.cost = cost
+        self.quantity = quantity
+        self.time = time
+
+    def __init__(self, id, name, status,  cost, quantity):
+        self.id = id
+        self.name = name
+        self.status = status
+        self.cost = cost
+        self.quantity = quantity
+
+
 def check_specical_charecter(username):
     pattern = r'[^\w\s]'
     if re.search(pattern,username):
