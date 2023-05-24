@@ -1,5 +1,4 @@
 import json
-
 data = {}
 data['people'] = []
 data['people'].append({
@@ -28,8 +27,7 @@ with open('data.txt') as json_file:
         print('Website: ' + p['website'])
         print('From: ' + p['from'])
         print('')
-with open('data.txt') as outfile:
-    data = json.load(json_file)
-    for p in data['people']:
-        p['name'] = "Ttan"
-    json.dump(data,outfile)
+# tạo 1 file mới
+new = "ttan"
+with open('data/client/'+new+'.txt', 'w') as f:
+    f.write('Create a new text file!')
