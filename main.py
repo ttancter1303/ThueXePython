@@ -1,4 +1,3 @@
-import datetime
 import json
 import random
 import re 
@@ -22,7 +21,7 @@ class Client:
         self.username = username
         self.password = password
         self.money = money
-        self.ListVehical = ListVehical = {}
+        self.ListVehical = ListVehical
     def __init__(self, id, name, username, password):
         self.id = id
         self.name = name
