@@ -306,14 +306,14 @@ def deleteVehical():
             json.dump(data, f)
         print("-> Xóa dữ liệu thành công!")
 def menuChoice():
-    print("-----------------------")
-    print("1. Thêm xe mới")
-    print("2. Sửa xe")
-    print("3. Xóa xe")
-    print("0. Thoát chương trình")
-    print("-----------------------")
-    choice = input("Nhập lựa chọn: ")
     while True:
+        print("-----------------------")
+        print("1. Thêm xe mới")
+        print("2. Sửa xe")
+        print("3. Xóa xe")
+        print("0. Thoát chương trình")
+        print("-----------------------")
+        choice = input("Nhập lựa chọn: ")
         if choice == "1":
             addVehical()
         elif choice == "2":
@@ -321,7 +321,7 @@ def menuChoice():
         elif choice == "3":
             deleteVehical()
         elif choice == "0":
-            print("Thoát chương trình.")
+            print("Thoát chương trình.....")
             break
         else:
             print("Lựa chọn không hợp lệ!")
