@@ -90,7 +90,10 @@ def login():
             for p in data['client']:
                 if p['username'] == Username and bcrypt.checkpw(Password.encode('utf-8'),p['password'].encode('utf-8')):
                     print("Login succesfully !")
-                    userObj.id = p['id'],userObj.name = p['name'],userObj.username = p['username'],userObj.password = p['password']
+                    userObj.id = p['id']
+                    userObj.name = p['name']
+                    userObj.username = p['username']
+                    userObj.password = p['password']
                     return adminCheck
 # phần login đã làm xong 90% chưa có check kí tự đặc biệt và giải mã password
 
@@ -108,33 +111,32 @@ def register():
             hashed_password_str = hashed_password.decode('utf-8') #chuyền đổi từ bytes sang chuỗi thì lưu được vào file json
             id = random.random()
             # tạo id random để đảm bảo các client ko bị trùng lặp
-            NewUser = Client(id, Name, Username, hashed_password_str)
             userObj.id = id
             userObj.name = Name
             userObj.username = Username
             userObj.password = hashed_password_str
             # lấy thông tin về tệp và lấy kích thước tệp đó
-            if os.path.exists("data/client/"+NewUser.username+".txt"):
+            if os.path.exists("data/client/"+userObj.username+".txt"):
                 print("Tài khoản này đã được đăng ký xin vui lòng đăng ký tài khoản khác")
                 break
             else:
-                open("data/client/" + NewUser.username + ".txt",'w')
+                open("data/client/" + userObj.username + ".txt",'w')
                 #  sử dụng try except để bắt lỗi và sử lý ngoại lệ 
                 try:
-                    with open("data/client/"+NewUser.username+".txt") as json_file:
+                    with open("data/client/"+userObj.username+".txt") as json_file:
                         data['client'].append({
-                            "id": NewUser.id,
-                            "name": NewUser.name,
-                            "username": NewUser.username,
-                            "password": NewUser.password})
-                    with open("data/client/"+NewUser.username+".txt", 'w') as outfile:
+                            "id": userObj.id,
+                            "name": userObj.name,
+                            "username": userObj.username,
+                            "password": userObj.password})
+                    with open("data/client/"+userObj.username+".txt", 'w') as outfile:
                         json.dump(data, outfile)
                         print("Đăng ký thành công")
-                        return NewUser
+                        return userObj
                 except json.decoder.JSONDecodeError:
                 #    nếu có lỗi xảy ra khi chuyển đổi nọi dụng của file sang đối tượng json
                 #    tạo luôn đối tượng json mới lưu vào file
-                    with open("data/client/"+NewUser.username+".txt",'w') as outfile:
+                    with open("data/client/"+userObj.username+".txt",'w') as outfile:
                        json.dump(data,outfile)
             break
         else:
@@ -328,13 +330,13 @@ def menuChoice():
         else:
             print("Lựa chọn không hợp lệ!")
             
-def rentVehical(user):
+def rentVehical():
     listVehical = []
     vehical = Vehical()
     folder_path = "data/vehical"
     # Lấy danh sách tên file trong thư mục
     file_names = os.listdir(folder_path)
-    # In ra tên các file
+    # lấy ra tên các file và chạy for để lấy giá trị và gán vào đối tượng vehical
     for file_name in file_names:
         with open('data/vehical/' + file_name , 'r') as f:
             data = json.load(f)
@@ -344,18 +346,39 @@ def rentVehical(user):
             vehical.cost = p['cost']
             print("cost : ",vehical.cost)
             vehical.status = p['status']
-            print("status : ",vehical.status)
+            if(vehical.status == 1):
+                print("Còn xe")
+            else: print("Hết xe")
             vehical.time = p['time']
             print("time : ",vehical.time)
             vehical.quantity = p['quantity']
             print("quantity : ",vehical.quantity)
             print('')
             listVehical.append(vehical)
+    #         hiển thị tạm thời list xe ra cho người dùng chọn cũng như đẩy đối tượng vehical vào 1 list
     selectName = input("Nhập tên xe cần thuê: ")
+    # chạy for kiểm tra từng đối tượng trong list
     for x in listVehical:
         if selectName == x.name:
-            with open('data/client/'+userObj.name+'.txt') as json_file:
-                pass
+            print(x.name)
+            try:
+                with open('data/client/'+userObj.name+'.txt') as json_file:
+                    txt1 = json_file.read()  # lấy dữ liệu trong file
+                    jsonObj = json.loads(txt1)  # chuyển đổi nôi dụng sang từ chuỗi json sang đối tượng
+                    # đoạn này đang bị lỗi gì đó mà t ko bt :))))
+                    jsonObj['listVehical'].append({
+                        'id': x.id,
+                        'name': x.name,
+                        'time': x.time,
+                        'cost': x.cost,
+                        'status': x.status})
+                with open('data/client/'+userObj.name+'.txt', 'w') as outfile:
+                    json.dump(jsonObj, outfile)
+            except json.decoder.JSONDecodeError:
+                #    nếu có lỗi xảy ra khi chuyển đổi nọi dụng của file sang đối tượng json
+                #    tạo luôn đối tượng json mới lưu vào file
+                with open('data/client/'+userObj.name+'.txt') as outfile:
+                    json.dump(data, outfile)
 
 def menuLogin():
     # thêm switch case vào
