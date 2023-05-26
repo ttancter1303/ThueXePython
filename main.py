@@ -298,13 +298,15 @@ def deleteVehical():
                 name = data['vehical'][0]['name']
                 break
     if found:
-        with open('data/vehical/' + name + '.txt', 'r') as f:
-            data = json.load(f)
-        #     xóa dữ liệu trong file json
-        del data['vehical']
-        with open('data/vehical/' + name + '.txt', 'w') as f:
-            json.dump(data, f)
-        print("-> Xóa dữ liệu thành công!")
+#         with open('data/vehical/' + name + '.txt', 'r') as f:
+#             data = json.load(f)
+#         #     xóa dữ liệu trong file json
+#         del data['vehical']
+#         with open('data/vehical/' + name + '.txt', 'w') as f:
+#             json.dump(data, f)
+        filename = 'data/vehical/' + name + '.txt'
+        os.remove(filename)
+        print("-> Xóa xe thành công!")
 def menuChoice():
     while True:
         print("-----------------------")
