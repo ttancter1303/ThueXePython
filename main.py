@@ -55,7 +55,12 @@ def check_specical_charecter(username):
         return True
     else:
         return False
-
+def check_number(num):
+    pattern = r'[^\d]'
+    if re.search(pattern, num):
+        return True
+    else:
+        return False
 
 # mã hóa mật khẩu sử dụng hàm thư viện đẻ băm mật khẩu ngẫu nhiên và được mã hóa bởi utf-8
 #
@@ -153,19 +158,36 @@ def addVehical(): #thêm dữ liệu xe
     id = random.randint(1, 1000)
     print("- Nhập thông tin xe: ")
     # Nhập tên xe
-    name = input("  + Nhập tên xe : ")
+    while True:
+        name = input("  + Nhập tên xe : ")
+        if check_specical_charecter(name):
+            print("-> Nhập sai định dạng! Vui lòng nhập lại.")
+        else:
+            break
+
     # tình trạng xe
     while True:
         # nếu nhập 1 còn hàng, 0 hết hàng
-        status = int(input("  + Nhập tình trạng(còn(1)/hết(0)): "))
+        status = int(input("  + Nhập tình trạng(1/0): "))
         if status == 0 or status == 1:
             break
         else:
             print("-> Định dạng sai! Xin vui lòng nhập lại")
-    # giá tiền của 1 xe
-    cost = float(input("  + Nhập giá tiền($): "))
+    # giá tiền của 1
+    while True:
+        cost = input("  + Nhập giá tiền($): ")
+        if check_number(cost):
+            print("-> Nhập sai định dạng! Vui lòng nhập lại.")
+        else:
+            break
+
     # Số lượng xe
-    quantity = int(input("  + Nhập số lượng xe: "))
+    while True:
+        quantity = input("  + Nhập số lượng xe: ")
+        if check_number(quantity):
+            print("-> Nhập sai định dạng! Vui lòng nhập lại.")
+        else:
+            break
     # thời gian nhập xe tự động hiện theo ngày sẵn có
     tg = datetime.datetime.now()
     time = tg.strftime("%d/%m/%Y")
@@ -201,7 +223,7 @@ def editVehical():
     if found:
         with open('data/vehical/' + name + '.txt', 'r') as f:
             data = json.load(f)
-        print("- Thông tin xe cần sửa:")
+        print("- Thông tin xe ban đầu:")
         print(" + Tên xe:", data['vehical'][0]['name'])
         if data['vehical'][0]['status'] == 1:
             print(" + Tình trạng: Còn hàng")
@@ -210,18 +232,38 @@ def editVehical():
         # print(" + Tình trạng:", data['vehical'][0]['status'])
         print(" + Giá tiền:", data['vehical'][0]['cost'])
         print(" + Số lượng:", data['vehical'][0]['quantity'])
+        print(" + Thời gian nhập: ", data['vehical'][0]['time'])
+
         print("- Nhập lại thông tin xe:")
-        new_name = input("  + Nhập tên xe mới: ")
+        while True:
+            new_name = input("  + Nhập tên xe : ")
+            if check_specical_charecter(new_name):
+                print("Nhập sai định dạng! Vui lòng nhập lại.")
+            else:
+                break
+
         while True:
             # nếu nhập 1 còn hàng, 0 hết hàng
-            new_status = input("    + Nhập tình trạng mới(1/0): ")
+            new_status = int(input("  + Nhập tình trạng(1/0): "))
             if new_status == 0 or new_status == 1:
                 break
             else:
                 print("-> Định dạng sai! Xin vui lòng nhập lại")
-        # new_status = input("    + Nhập tình trạng mới: ")
-        new_cost = float(input("  + Nhập giá tiền mới: "))
-        new_quanlity = int(input("  + Nhập số lượng xe: "))
+
+        while True:
+            new_cost = input("  + Nhập giá tiền($): ")
+            if check_number(new_cost):
+                print("-> Nhập sai định dạng! Vui lòng nhập lại.")
+            else:
+                break
+
+            # Số lượng xe
+        while True:
+            new_quanlity = input("  + Nhập số lượng xe: ")
+            if check_number(new_quanlity):
+                print("-> Nhập sai định dạng! Vui lòng nhập lại.")
+            else:
+                break
         tg = datetime.datetime.now()
         new_time = tg.strftime("%d/%m/%Y")
         data['vehical'][0]['name'] = new_name
