@@ -307,6 +307,7 @@ def rentVehical(user):
     for x in listVehical:
         if selectName == x.name:
             with open('data/client/'+userObj.name+'.txt') as json_file:
+                pass
 
 def menuLogin():
     # thêm switch case vào
