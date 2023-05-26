@@ -325,6 +325,7 @@ def menuChoice():
             break
         else:
             print("Lựa chọn không hợp lệ!")
+            
 def rentVehical(user):
     listVehical = []
     vehical = Vehical()
