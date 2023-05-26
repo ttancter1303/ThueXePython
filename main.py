@@ -331,7 +331,6 @@ def menuLogin():
 def mainMenuClient():
     rentVehical()
 
-
 def mainMenuAdmin():
     print("main menu admin")
     menuChoice()
