@@ -151,7 +151,9 @@ def showAllCilent():
             print('')
 
     # app chia làm 3 màn hình chính là login admin và client
-def addVehical(): #thêm dữ liệu xe
+     #thêm dữ liệu xe
+        
+def addVehical():
     data = {}
     data['vehical'] = []
     # tạo 1 id ngẫu nhiên trong khoảng 1 - 1000
@@ -203,6 +205,7 @@ def addVehical(): #thêm dữ liệu xe
     with open('data/vehical/' + name + '.txt', 'w') as f:
             json.dump(data, f)
     print("-> Bạn đã thêm xe thành công!")
+    
 # Sửa dữ liệu xe
 def editVehical():
     id = input("Nhập ID xe cần sửa: ")
@@ -320,157 +323,8 @@ def menuChoice():
         elif choice == "0":
             print("Thoát chương trình.")
             break
-        else:def addVehical(): #thêm dữ liệu xe
-    data = {}
-    data['vehical'] = []
-    # tạo 1 id ngẫu nhiên trong khoảng 1 - 1000
-    id = random.randint(1, 1000)
-    print("- Nhập thông tin xe: ")
-    # Nhập tên xe
-    while True:
-        name = input("  + Nhập tên xe : ")
-        if check_specical_charecter(name):
-            print("-> Nhập sai định dạng! Vui lòng nhập lại.")
         else:
-            break
-
-    # tình trạng xe
-    while True:
-        # nếu nhập 1 còn hàng, 0 hết hàng
-        status = int(input("  + Nhập tình trạng(1/0): "))
-        if status == 0 or status == 1:
-            break
-        else:
-            print("-> Định dạng sai! Xin vui lòng nhập lại")
-    # giá tiền của 1
-    while True:
-        cost = input("  + Nhập giá tiền($): ")
-        if check_number(cost):
-            print("-> Nhập sai định dạng! Vui lòng nhập lại.")
-        else:
-            break
-
-    # Số lượng xe
-    while True:
-        quantity = input("  + Nhập số lượng xe: ")
-        if check_number(quantity):
-            print("-> Nhập sai định dạng! Vui lòng nhập lại.")
-        else:
-            break
-    # thời gian nhập xe tự động hiện theo ngày sẵn có
-    tg = datetime.datetime.now()
-    time = tg.strftime("%d/%m/%Y")
-    # lưu vào file
-    data['vehical'].append({
-        'id': id,
-        'name': name,
-        'status': status,
-        'cost': cost,
-        'quantity': quantity,
-        'time': time
-    })
-    with open('data/vehical/' + name + '.txt', 'w') as f:
-            json.dump(data, f)
-    print("-> Bạn đã thêm xe thành công!")
-# Sửa dữ liệu xe
-def editVehical():
-    id = input("Nhập ID xe cần sửa: ")
-    if not id.isdigit():
-        print("-> ID phải là một số nguyên. Vui lòng nhập lại!")
-        return
-    found = False
-    for filename in os.listdir('data/vehical'):
-        with open('data/vehical/' + filename) as f:
-            try:
-                data = json.load(f)
-            except json.decoder.JSONDecodeError:
-                continue
-            if data['vehical'][0]['id'] == int(id):
-                found = True
-                name = data['vehical'][0]['name']
-                break
-    if found:
-        with open('data/vehical/' + name + '.txt', 'r') as f:
-            data = json.load(f)
-        print("- Thông tin xe ban đầu:")
-        print(" + Tên xe:", data['vehical'][0]['name'])
-        if data['vehical'][0]['status'] == 1:
-            print(" + Tình trạng: Còn hàng")
-        else:
-            print(" + Tình trạng: Hết hàng")
-        # print(" + Tình trạng:", data['vehical'][0]['status'])
-        print(" + Giá tiền:", data['vehical'][0]['cost'])
-        print(" + Số lượng:", data['vehical'][0]['quantity'])
-        print(" + Thời gian nhập: ", data['vehical'][0]['time'])
-
-        print("- Nhập lại thông tin xe:")
-        while True:
-            new_name = input("  + Nhập tên xe : ")
-            if check_specical_charecter(new_name):
-                print("Nhập sai định dạng! Vui lòng nhập lại.")
-            else:
-                break
-
-        while True:
-            # nếu nhập 1 còn hàng, 0 hết hàng
-            new_status = int(input("  + Nhập tình trạng(1/0): "))
-            if new_status == 0 or new_status == 1:
-                break
-            else:
-                print("-> Định dạng sai! Xin vui lòng nhập lại")
-
-        while True:
-            new_cost = input("  + Nhập giá tiền($): ")
-            if check_number(new_cost):
-                print("-> Nhập sai định dạng! Vui lòng nhập lại.")
-            else:
-                break
-
-            # Số lượng xe
-        while True:
-            new_quanlity = input("  + Nhập số lượng xe: ")
-            if check_number(new_quanlity):
-                print("-> Nhập sai định dạng! Vui lòng nhập lại.")
-            else:
-                break
-        tg = datetime.datetime.now()
-        new_time = tg.strftime("%d/%m/%Y")
-        data['vehical'][0]['name'] = new_name
-        data['vehical'][0]['status'] = new_status
-        data['vehical'][0]['cost'] = new_cost
-        data['vehical'][0]['quality'] = new_quanlity
-        data['vehical'][0]['time'] = new_time
-        with open('data/vehical/' + name + '.txt', 'w') as f:
-            json.dump(data, f)
-        print("-> Đã cập nhật thông tin xe!")
-    else:
-        print("-> Không tìm thấy xe có ID!", id)
-
-# Xóa dữ liệu xe
-def deleteVehical():
-    id = input("Nhập ID xe cần xóa: ")
-    if not id.isdigit():
-        print("-> ID phải là một số nguyên. Vui lòng nhập lại!")
-        return
-    found = False
-    for filename in os.listdir('data/vehical'):
-        with open('data/vehical/' + filename) as f:
-            try:
-                data = json.load(f)
-            except json.decoder.JSONDecodeError:
-                continue
-            if data['vehical'][0]['id'] == int(id):
-                found = True
-                name = data['vehical'][0]['name']
-                break
-    if found:
-        with open('data/vehical/' + name + '.txt', 'r') as f:
-            data = json.load(f)
-        #     xóa dữ liệu trong file json
-        del data['vehical']
-        with open('data/vehical/' + name + '.txt', 'w') as f:
-            json.dump(data, f)
-        print("-> Xóa dữ liệu thành công!")
+            print("Lựa chọn không hợp lệ!")
 def rentVehical(user):
     listVehical = []
     vehical = Vehical()
