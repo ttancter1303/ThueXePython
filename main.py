@@ -174,8 +174,8 @@ def addVehical():
     # tình trạng xe
     while True:
         # nếu nhập 1 còn hàng, 0 hết hàng
-        status = int(input("  + Nhập tình trạng(1/0): "))
-        if status == 0 or status == 1:
+        status = input("  + Nhập tình trạng(1/0): ")
+        if status == "0" or status == "1":
             break
         else:
             print("-> Định dạng sai! Xin vui lòng nhập lại")
@@ -232,7 +232,7 @@ def editVehical():
             data = json.load(f)
         print("- Thông tin xe ban đầu:")
         print(" + Tên xe:", data['vehical'][0]['name'])
-        if data['vehical'][0]['status'] == 1:
+        if data['vehical'][0]['status'] == "1":
             print(" + Tình trạng: Còn hàng")
         else:
             print(" + Tình trạng: Hết hàng")
@@ -251,8 +251,8 @@ def editVehical():
 
         while True:
             # nếu nhập 1 còn hàng, 0 hết hàng
-            new_status = int(input("  + Nhập tình trạng(1/0): "))
-            if new_status == 0 or new_status == 1:
+            new_status = input("  + Nhập tình trạng(1/0): ")
+            if new_status == "0" or new_status == "1":
                 break
             else:
                 print("-> Định dạng sai! Xin vui lòng nhập lại")
