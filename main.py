@@ -356,9 +356,7 @@ def thongke():
                   
                 else:
                     vehicleCount[car_type] = int(p['quantity'])
-                    
-  
-    
+
     print("Số lượng mỗi loại xe:")
     for car_type, count in vehicleCount.items():
         print(f"{car_type}: {count}")       
@@ -406,8 +404,8 @@ def menuChoice():
 #         rentedVehicles.append(vehical)
 #         saveRentVehical()
 
-
 def rentVehical():
+
     listVehical = []
     vehical = Vehical()
     folder_path = "data/vehical"
@@ -434,33 +432,41 @@ def rentVehical():
             print('')
             listVehical.append(vehical)
     #         hiển thị tạm thời list xe ra cho người dùng chọn cũng như đẩy đối tượng vehical vào 1 list
-
     selectName = input("Nhập tên xe cần thuê: ")
     for filename in os.listdir('data/vehical/'):
         if filename.endswith('.txt'):
             with open('data/vehical/' + filename ) as f:
                 try:
-                    data = json.load(f)
+                    dataVehical = json.load(f)
                 except json.decoder.JSONDecodeError:
                     continue
-                if data['vehical'][0]['name'] == selectName:
+                if dataVehical['vehical'][0]['name'] == selectName:
                     found = True
-                    data['vehical'][0]['status'] = 0
-                    with open('data/vehical/' + filename, 'w') as f:
-                        json.dump(data, f)
-                    with open('data/client/' + 'ave_list' + '.txt','w') as f:
-                        data = {'vehical': []}
+                    dataVehical['vehical'][0]['status'] = 0
+
+                    with open('data/client/' + userObj.username + '.txt','f') as userfile:
+                        dataClient = json.load(userfile)
+                        dataVehical = {'vehical': []}
                         for p in listVehical:
+                            tg = datetime.datetime.now()
+                            new_time = tg.strftime("%d/%m/%Y")
                             if p.name == selectName:
-                                data['vehical'].append(p.__dict__)
-                        json.dump(data, f)
+                                dataVehical['vehical'].append({
+                                    "name":p.name,
+                                    "cost":p.cost,
+                                    "time":new_time
+                                })
+                        # dump data xe vào client
+                        # code ở đây
+                        json.dump(dataClient, dataVehical)
+                        print("Thuê xe thành công")
                     break
     if not found:
         print('không tìm thấy xe có tên ',selectName)
-  
-
-rentVehical()
-
+# register()
+# login()
+# rentVehical()
+menuChoice()
 # def menuLogin():
 #     # thêm switch case vào
 #     print("-----------------------")
