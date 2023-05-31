@@ -4,6 +4,8 @@ import random
 import re 
 import bcrypt
 import os
+import matplotlib.pyplot as plt
+
 
 data = {}
 data['client'] = []
@@ -309,12 +311,76 @@ def deleteVehical():
         filename = 'data/vehical/' + name + '.txt'
         os.remove(filename)
         print("-> Xóa xe thành công!")
+def search():
+    print('tìm kiếm xe')
+    name = input('nhập tên xe cần tìm kiếm: ')
+    found = False
+    for filename in os.listdir('data/vehical'):
+        if filename.endswith('.txt'):
+            with open('data/vehical/' + filename) as f:
+                try:
+                    data = json.load(f)
+                except json.decoder.JSONDecodeError:
+                    continue
+                if data['vehical'][0]['name'] == name:
+                    found = True
+                    print("thông tin xe sau khi tìm là : ")
+                    print('ID : ',data['vehical'][0]['id'])
+                    print('Tên xe : ',data['vehical'][0]['name'])
+                    print('Tình trạng : ',data['vehical'][0]['status'])
+                    print('giá tiền : ',data['vehical'][0]['cost'])
+                    print('số lượng : ',data['vehical'][0]['quantity'])
+                    print('thời gian nhập : ',data['vehical'][0]['time'])
+                    break
+    if not found:
+        print('không tìm thấy xe có tên ',name)
+        
+def thongke():
+    # Tạo dictionary để lưu trữ số lượng của từng xe
+    vehicleCount = {}
+    # Lấy đường dẫn tuyệt đối của thư mục data/vehical
+    folder_path = os.path.abspath('data/vehical')
+    # Lấy danh sách tên file trong thư mục
+    file_names = os.listdir(folder_path)
+    
+    # Lặp qua từng file và thêm số lượng của xe vào dictionary
+   
+    for file_name in file_names:
+        with open(os.path.join(folder_path, file_name), 'r') as f:
+            data = json.load(f)
+            for p in data['vehical']:
+                car_type = p['name']
+                quantity = p['quantity']
+                if car_type in vehicleCount:
+                    vehicleCount[car_type] += int(p['quantity'])
+                  
+                else:
+                    vehicleCount[car_type] = int(p['quantity'])
+                    
+  
+    
+    print("Số lượng mỗi loại xe:")
+    for car_type, count in vehicleCount.items():
+        print(f"{car_type}: {count}")       
+    # Tạo biểu đồ
+    plt.bar(range(len(vehicleCount)), list(vehicleCount.values()), align='center', width=0.5)
+    plt.xticks(range(len(vehicleCount)), list(vehicleCount.keys()))
+    plt.xlabel('Xe')
+    plt.ylabel('Số lượng')
+    plt.title('Số lượng của từng xe')
+    # Vẽ các chữ số trên biểu đồ
+    for i, count in enumerate(list(vehicleCount.values())):
+        plt.text(i, count + 0.1, str(count), ha='center', va='bottom')
+    plt.show()
+        
 def menuChoice():
     while True:
         print("-----------------------")
         print("1. Thêm xe mới")
         print("2. Sửa xe")
         print("3. Xóa xe")
+        print("4. Tìm kiếm xe ")
+        print("5. thống kê số lượng mỗi xe")
         print("0. Thoát chương trình")
         print("-----------------------")
         choice = input("Nhập lựa chọn: ")
@@ -324,12 +390,23 @@ def menuChoice():
             editVehical()
         elif choice == "3":
             deleteVehical()
+        elif choice == "4":
+            search()
+        elif choice == "5":
+            thongke()
         elif choice == "0":
             print("Thoát chương trình.....")
             break
         else:
             print("Lựa chọn không hợp lệ!")
-            
+          
+# menuChoice()  
+
+# def rentedVehical(vehical):
+#         rentedVehicles.append(vehical)
+#         saveRentVehical()
+
+
 def rentVehical():
     listVehical = []
     vehical = Vehical()
@@ -338,7 +415,7 @@ def rentVehical():
     file_names = os.listdir(folder_path)
     # lấy ra tên các file và chạy for để lấy giá trị và gán vào đối tượng vehical
     for file_name in file_names:
-        with open('data/vehical/' + file_name , 'r') as f:
+        with open('data/vehical/' + file_name, 'r') as f:
             data = json.load(f)
         for p in data['vehical']:
             vehical.name = p['name']
@@ -348,7 +425,8 @@ def rentVehical():
             vehical.status = p['status']
             if(vehical.status == 1):
                 print("Còn xe")
-            else: print("Hết xe")
+            else: 
+                print("Hết xe")
             vehical.time = p['time']
             print("time : ",vehical.time)
             vehical.quantity = p['quantity']
@@ -356,61 +434,64 @@ def rentVehical():
             print('')
             listVehical.append(vehical)
     #         hiển thị tạm thời list xe ra cho người dùng chọn cũng như đẩy đối tượng vehical vào 1 list
+
     selectName = input("Nhập tên xe cần thuê: ")
-    # chạy for kiểm tra từng đối tượng trong list
-    for x in listVehical:
-        if selectName == x.name:
-            print(x.name)
-            try:
-                with open('data/client/'+userObj.name+'.txt') as json_file:
-                    txt1 = json_file.read()  # lấy dữ liệu trong file
-                    jsonObj = json.loads(txt1)  # chuyển đổi nôi dụng sang từ chuỗi json sang đối tượng
-                    # đoạn này đang bị lỗi gì đó mà t ko bt :))))
-                    jsonObj['listVehical'].append({
-                        'id': x.id,
-                        'name': x.name,
-                        'time': x.time,
-                        'cost': x.cost,
-                        'status': x.status})
-                with open('data/client/'+userObj.name+'.txt', 'w') as outfile:
-                    json.dump(jsonObj, outfile)
-            except json.decoder.JSONDecodeError:
-                #    nếu có lỗi xảy ra khi chuyển đổi nọi dụng của file sang đối tượng json
-                #    tạo luôn đối tượng json mới lưu vào file
-                with open('data/client/'+userObj.name+'.txt') as outfile:
-                    json.dump(data, outfile)
+    for filename in os.listdir('data/vehical/'):
+        if filename.endswith('.txt'):
+            with open('data/vehical/' + filename ) as f:
+                try:
+                    data = json.load(f)
+                except json.decoder.JSONDecodeError:
+                    continue
+                if data['vehical'][0]['name'] == selectName:
+                    found = True
+                    data['vehical'][0]['status'] = 0
+                    with open('data/vehical/' + filename, 'w') as f:
+                        json.dump(data, f)
+                    with open('data/client/' + 'ave_list' + '.txt','w') as f:
+                        data = {'vehical': []}
+                        for p in listVehical:
+                            if p.name == selectName:
+                                data['vehical'].append(p.__dict__)
+                        json.dump(data, f)
+                    break
+    if not found:
+        print('không tìm thấy xe có tên ',selectName)
+  
 
-def menuLogin():
-    # thêm switch case vào
-    print("-----------------------")
-    print("1. Đăng nhập")
-    print("2. Đăng ký")
-    print("0. Thoát chương trình")
-    print("-----------------------")
-    choice = input("Nhập lựa chọn: ")
-    while True:
-        if choice == "1":
-            check = login()
-            return check
-        elif choice == "2":
-            register()
-        elif choice == "0":
-            print("Thoát chương trình.")
-            break
-        else:
-            print("Lựa chọn không hợp lệ.")
-def mainMenuClient():
-    rentVehical()
+rentVehical()
 
-def mainMenuAdmin():
-    print("main menu admin")
-    menuChoice()
-def Main():
-    adminCheck = menuLogin()
-    if(adminCheck == True):
-        # đăng nhập admin
-        mainMenuAdmin()
-    elif(adminCheck == False):
-        # đăng nhập user
-        mainMenuClient()
-Main()
+# def menuLogin():
+#     # thêm switch case vào
+#     print("-----------------------")
+#     print("1. Đăng nhập")
+#     print("2. Đăng ký")
+#     print("0. Thoát chương trình")
+#     print("-----------------------")
+#     choice = input("Nhập lựa chọn: ")
+#     while True:
+#         if choice == "1":
+#             check = login()
+#             return check
+#         elif choice == "2":
+#             register()
+#         elif choice == "0":
+#             print("Thoát chương trình.")
+#             break
+#         else:
+#             print("Lựa chọn không hợp lệ.")
+# def mainMenuClient():
+#     rentVehical()
+
+# def mainMenuAdmin():
+#     print("main menu admin")
+#     menuChoice()
+# def Main():
+#     adminCheck = menuLogin()
+#     if(adminCheck == True):
+#         # đăng nhập admin
+#         mainMenuAdmin()
+#     elif(adminCheck == False):
+#         # đăng nhập user
+#         mainMenuClient()
+# Main()
