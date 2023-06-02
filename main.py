@@ -625,3 +625,88 @@ def Main():
         mainMenuClient()
 Main()
 
+#hiện thi thông tin xe
+def get_vehicle_data():
+    id = input("Nhập ID xe cần xem thông tin: ")
+    if not id.isdigit():
+        print("-> ID phải là một số nguyên. Vui lòng nhập lại!")
+        return None
+
+    found = False
+    for filename in os.listdir('data/vehical/'):
+        with open('data/vehical/' + filename) as f:
+            try:
+                data = json.load(f)
+            except json.decoder.JSONDecodeError:
+                continue
+            if data['vehical'][0]['id'] == int(id):
+                found = True
+                break
+
+    if found:
+        print("- Chi tiết xe có mã", id, "là: ")
+        print(" + Tên xe:", data['vehical'][0]['name'])
+        if data['vehical'][0]['status'] == "1":
+            print(" + Tình trạng: Còn hàng")
+        else:
+            print(" + Tình trạng: Hết hàng")
+        print(" + Giá tiền:", data['vehical'][0]['cost'])
+        print(" + Số lượng:", data['vehical'][0]['quantity'])
+        print(" + Thời gian nhập: ", data['vehical'][0]['time'])
+    else:
+        print("-> Không tìm thấy xe có mã!", id)
+        
+        #hiện thi chi tiết cho admin xem
+
+def detail_admin():
+    username = input("Nhập tên người dùng: ")
+    try:
+        with open('data/client/' + username + '.txt') as json_file:
+            data = json.load(json_file)
+            for p in data['client']:
+                if p['username'] == username:
+                    print("Thông tin chi tiết của khách hàng:")
+                    print("ID: ", p['id'])
+                    print("Tên: ", p['name'])
+                    print("Username: ", p['username'])
+                    print("Password: ", p['password'])
+                    print("Danh sách xe đã thuê: ")
+
+                    for vehicle_id in p['ListVehical']:
+                        get_vehicle_data()
+                    return
+            print("Không tìm thấy thông tin khách hàng!")
+    except FileNotFoundError:
+        print("Không tìm thấy thông tin khách hàng!")
+
+# detail_admin()
+
+hiển thi chi tiết cho người dùng 
+def detail_client():
+    username= input("nhập tên khách hàng: ")
+    try:
+        with open('data/client/' + username + '.txt') as json_file:
+            data = json.load(json_file)
+            for p in data['client']:
+                if p['username'] == username:
+                    print("Thông tin chi tiết của khách hàng:")
+                    print("ID: ", p['id'])
+                    print("Tên: ", p['name'])
+                    print("Danh sách xe đã thuê: ")
+                    for vehicle_id in p['ListVehical']:
+                        vehicle_data = get_vehicle_data(vehicle_id)
+                        if vehicle_data is not None:
+                            print("- Tên xe: ", vehicle_data['name'])
+                            print("- Giá tiền: ", vehicle_data['cost'])
+                            print("- Số lượng: ", vehicle_data['quantity'])
+                            print("- Thời gian nhập: ", vehicle_data['time'])
+                        else:
+                            print("- Xe không tồn tại!")
+                    return
+            print("Không tìm thấy thông tin khách hàng!")
+    except FileNotFoundError:
+        print("Không tìm thấy thông tin khách hàng!")
+
+detail_client()
+
+
