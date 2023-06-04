@@ -58,7 +58,7 @@ def check_specical_charecter(username):
     else:
         return False
 def check_number(num):
-    pattern = r'[^\d]'
+    pattern = r'[^\d+]'
     if re.search(pattern, num):
         return True
     else:
