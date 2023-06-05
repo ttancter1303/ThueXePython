@@ -1,1 +1,1 @@
-{"vehical": [{"id": 41, "name": "toyota", "status": 0, "cost": "300", "quantity": "12", "time": "26/05/2023"}]}
+{"vehical": [{"id": 930, "name": "toyota", "status": "1", "cost": "400", "quantity": "59", "time": "05/06/2023"}]}

@@ -145,19 +145,6 @@ def register():
             break
         else:
             print("Wrong password")
-
-def showAllCilent():
-    # đây là hàm để test xem là đã đẩy được lên thành công chưa và hiển thị lên màn hình
-    with open('data/client.txt') as json_file:
-        data = json.load(json_file)
-        for p in data['client']:
-            print('Name: ' + p['name'])
-            print('password: ' + p['password'])
-            print('username: ' + p['username'])
-            print('')
-
-    # app chia làm 3 màn hình chính là login admin và client
-     #thêm dữ liệu xe
         
 def addVehical():
     data = {}
@@ -304,12 +291,6 @@ def deleteVehical():
                 name = data['vehical'][0]['name']
                 break
     if found:
-#         with open('data/vehical/' + name + '.txt', 'r') as f:
-#             data = json.load(f)
-#         #     xóa dữ liệu trong file json
-#         del data['vehical']
-#         with open('data/vehical/' + name + '.txt', 'w') as f:
-#             json.dump(data, f)
         filename = 'data/vehical/' + name + '.txt'
         os.remove(filename)
         print("-> Xóa xe thành công!")
@@ -381,6 +362,7 @@ def menuChoiceForAdmin():
         print("3. Xóa xe")
         print("4. Tìm kiếm xe ")
         print("5. thống kê số lượng mỗi xe")
+        print("6. Tìm kiếm người dùng")
         print("0. Thoát chương trình")
         print("-----------------------")
         choice = input("Nhập lựa chọn: ")
@@ -394,20 +376,15 @@ def menuChoiceForAdmin():
             search()
         elif choice == "5":
             thongke()
+        elif choice == "6":
+            detail_client()
         elif choice == "0":
             print("Thoát chương trình.....")
             break
         else:
             print("Lựa chọn không hợp lệ!")
-          
-# menuChoice()  
-
-# def rentedVehical(vehical):
-#         rentedVehicles.append(vehical)
-#         saveRentVehical()
 
 def rentVehical():
-
     listVehical = []
     vehical = Vehical()
     folder_path = "data/vehical"
@@ -420,19 +397,10 @@ def rentVehical():
         for p in data['vehical']:
             vehical.id = p['id']
             vehical.name = p['name']
-            print("name : ",vehical.name)
             vehical.cost = p['cost']
-            print("cost : ",vehical.cost)
             vehical.status = p['status']
-            if(vehical.status == 1):
-                print("Còn xe")
-            else: 
-                print("Hết xe")
             vehical.time = p['time']
-            print("time : ",vehical.time)
             vehical.quantity = p['quantity']
-            print("quantity : ",vehical.quantity)
-            print('')
             listVehical.append(vehical)
     #         hiển thị tạm thời list xe ra cho người dùng chọn cũng như đẩy đối tượng vehical vào 1 list
     selectName = input("Nhập tên xe cần thuê: ")
@@ -441,6 +409,7 @@ def rentVehical():
             with open('data/vehical/' + filename ) as f:
                 try:
                     dataVehical = json.load(f)
+                    print(dataVehical)
                 except json.decoder.JSONDecodeError:
                     continue
                 if dataVehical['vehical'][0]['name'] == selectName:
@@ -450,7 +419,7 @@ def rentVehical():
                     else:
                         with open('data/client/' + userObj.username + '.txt','r') as userfile:
                             dataClient = json.load(userfile)
-                        dataClient["vehical"] = dataVehical
+                        dataClient["ListVehical"] = dataVehical
                         with open('data/client/' + userObj.username + '.txt','w') as f:
                             json.dump(dataClient, f)
                             print("Thuê xe thành công")
@@ -458,7 +427,7 @@ def rentVehical():
     if not found:
         print('không tìm thấy xe có tên ',selectName)
 def showAllClient():
-
+    pass
 def detail_client():
     username = input("nhập tên khách hàng: ")
     try:
@@ -483,9 +452,6 @@ def detail_client():
             print("Không tìm thấy thông tin khách hàng!")
     except FileNotFoundError:
         print("Không tìm thấy thông tin khách hàng!")
-
-
-# detail_client()
 
 # chi tiết thông tin xe
 def get_vehical_data():
@@ -517,11 +483,7 @@ def get_vehical_data():
     else:
         print("-> Không tìm thấy xe có mã!", id)
 
-
-# get_vehical_data()
-
 # chi tiết người dùng cho admin
-
 def detailClientForadmin():
     username = (input("Nhập tên người dùng muốn xem."))
     try:
@@ -584,47 +546,6 @@ def search_vehicle():
     else:
         print("Không tìm thấy xe với ID đã nhập.")
 
-
-# register()
-# login()
-# rentVehical()
-def menuLogin():
-    # thêm switch case vào
-    print("-----------------------")
-    print("1. Đăng nhập")
-    print("2. Đăng ký")
-    print("0. Thoát chương trình")
-    print("-----------------------")
-    choice = input("Nhập lựa chọn: ")
-    while True:
-        if choice == "1":
-            check = login()
-            return check
-        elif choice == "2":
-            register()
-        elif choice == "0":
-            print("Thoát chương trình.")
-            break
-        else:
-            print("Lựa chọn không hợp lệ vui lòng nhập lại.")
-            menuLogin()
-            break
-def mainMenuClient():
-    rentVehical()
-
-def mainMenuAdmin():
-    print("main menu admin")
-    menuChoiceForAdmin()
-def Main():
-    adminCheck = menuLogin()
-    if(adminCheck == True):
-        # đăng nhập admin
-        mainMenuAdmin()
-    elif(adminCheck == False):
-        # đăng nhập user
-        mainMenuClient()
-Main()
-
 #hiện thi thông tin xe
 def get_vehicle_data():
     id = input("Nhập ID xe cần xem thông tin: ")
@@ -655,7 +576,7 @@ def get_vehicle_data():
         print(" + Thời gian nhập: ", data['vehical'][0]['time'])
     else:
         print("-> Không tìm thấy xe có mã!", id)
-        
+
         #hiện thi chi tiết cho admin xem
 
 def detail_admin():
@@ -681,7 +602,7 @@ def detail_admin():
 
 # detail_admin()
 
-hiển thi chi tiết cho người dùng 
+# hiển thi chi tiết cho người dùng
 def detail_client():
     username= input("nhập tên khách hàng: ")
     try:
@@ -706,7 +627,43 @@ def detail_client():
             print("Không tìm thấy thông tin khách hàng!")
     except FileNotFoundError:
         print("Không tìm thấy thông tin khách hàng!")
+def menuLogin():
+    # thêm switch case vào
+    print("-----------------------")
+    print("1. Đăng nhập")
+    print("2. Đăng ký")
+    print("0. Thoát chương trình")
+    print("-----------------------")
+    choice = input("Nhập lựa chọn: ")
+    while True:
+        if choice == "1":
+            check = login()
+            return check
+        elif choice == "2":
+            register()
+            break
+        elif choice == "0":
+            print("Thoát chương trình.")
+            break
+        else:
+            print("Lựa chọn không hợp lệ vui lòng nhập lại.")
+            menuLogin()
+            break
+def mainMenuClient():
+    rentVehical()
 
-detail_client()
+def mainMenuAdmin():
+    print("main menu admin")
+    menuChoiceForAdmin()
+def Main():
+    adminCheck = menuLogin()
+    if(adminCheck == True):
+        # đăng nhập admin
+        mainMenuAdmin()
+    elif(adminCheck == False):
+        # đăng nhập user
+        mainMenuClient()
+Main()
+
 
 

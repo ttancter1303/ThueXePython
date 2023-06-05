@@ -1,1 +1,0 @@
-{"client": [{"id": 0.13125077683825614, "name": "tuan", "username": "tuan", "password": "$2b$12$e7v3T0JRr.jFif9hB6FQQ.yYbHUG8NQJwUySGQrwi09nP8U9X1gPu"}], "vehical": {"vehical": [{"id": 41, "name": "toyota", "status": 0, "cost": "300", "quantity": "12", "time": "26/05/2023"}]}}
