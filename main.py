@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 
 data = {}
 data['client'] = []
+tg = datetime.datetime.now()
+time = tg.strftime("%d/%m/%Y")
 class Admin:
     def __init__(self, id, name, username, password):
         self.id = id
@@ -402,14 +404,13 @@ def rentVehical():
             vehical.time = p['time']
             vehical.quantity = p['quantity']
             listVehical.append(vehical)
-    #         hiển thị tạm thời list xe ra cho người dùng chọn cũng như đẩy đối tượng vehical vào 1 list
     selectName = input("Nhập tên xe cần thuê: ")
+    selectQuantity = input("Nhập số lượng xe cần thuê: ")
     for filename in os.listdir('data/vehical/'):
         if filename.endswith('.txt'):
             with open('data/vehical/' + filename ) as f:
                 try:
                     dataVehical = json.load(f)
-                    print(dataVehical)
                 except json.decoder.JSONDecodeError:
                     continue
                 if dataVehical['vehical'][0]['name'] == selectName:
@@ -417,10 +418,17 @@ def rentVehical():
                     if(dataVehical['vehical'][0]['status'] == 0):
                         print("Xe đã hết vui lòng chọn xe khác")
                     else:
-                        with open('data/client/' + userObj.username + '.txt','r') as userfile:
+                        with open('data/client/' + userObj.username + '.txt', 'r') as userfile:
                             dataClient = json.load(userfile)
-                        dataClient["ListVehical"] = dataVehical
-                        with open('data/client/' + userObj.username + '.txt','w') as f:
+                            newDataVehical = {
+                                "id": dataVehical["vehical"][0]["id"],
+                                "name": dataVehical["vehical"][0]["name"],
+                                "cost": dataVehical["vehical"][0]["cost"],
+                                "quantity": selectQuantity,
+                                "time": time
+                            }
+                        dataClient["ListVehical"] = newDataVehical
+                        with open('data/client/' + userObj.username + '.txt', 'w') as f:
                             json.dump(dataClient, f)
                             print("Thuê xe thành công")
                         break
@@ -428,31 +436,6 @@ def rentVehical():
         print('không tìm thấy xe có tên ',selectName)
 def showAllClient():
     pass
-def detail_client():
-    username = input("nhập tên khách hàng: ")
-    try:
-        with open('data/client/' + username + '.txt') as json_file:
-            data = json.load(json_file)
-            for p in data['client']:
-                if p['username'] == username:
-                    print("Thông tin chi tiết của khách hàng:")
-                    print("ID: ", p['id'])
-                    print("Tên: ", p['name'])
-                    print("Danh sách xe đã thuê: ")
-                    for vehicle_id in p['ListVehical']:
-                        vehicle_data = get_vehicle_data(vehicle_id)
-                        if vehicle_data is not None:
-                            print("- Tên xe: ", vehicle_data['name'])
-                            print("- Giá tiền: ", vehicle_data['cost'])
-                            print("- Số lượng: ", vehicle_data['quantity'])
-                            print("- Thời gian nhập: ", vehicle_data['time'])
-                        else:
-                            print("- Xe không tồn tại!")
-                    return
-            print("Không tìm thấy thông tin khách hàng!")
-    except FileNotFoundError:
-        print("Không tìm thấy thông tin khách hàng!")
-
 # chi tiết thông tin xe
 def get_vehical_data():
     id = input("Nhập ID xe cần xem thông tin: ")
@@ -484,33 +467,6 @@ def get_vehical_data():
         print("-> Không tìm thấy xe có mã!", id)
 
 # chi tiết người dùng cho admin
-def detailClientForadmin():
-    username = (input("Nhập tên người dùng muốn xem."))
-    try:
-        with open('data/client/' + username + '.txt') as json_file:
-            data = json.load(json_file)
-            for p in data['client']:
-                if p['username'] == username:
-                    print("Thông tin chi tiết của khách hàng:")
-                    print("ID: ", p['id'])
-                    print("Tên: ", p['name'])
-                    print("Username: ", p['username'])
-                    print("Password: ", p['password'])
-                    print("Danh sách xe đã thuê: ")
-                    for vehicle_id in p['ListVehical']:
-                        vehicle_data = get_vehical_data(vehicle_id)
-                        if vehicle_data is not None:
-                            print("- Tên xe: ", vehicle_data['name'])
-                            print("- Giá tiền: ", vehicle_data['cost'])
-                            print("- Số lượng: ", vehicle_data['quantity'])
-                            print("- Thời gian nhập: ", vehicle_data['time'])
-                        else:
-                            print("- Xe không tồn tại!")
-                    return
-            print("Không tìm thấy thông tin khách hàng!")
-    except FileNotFoundError:
-        print("Không tìm thấy thông tin khách hàng!")
-
 
 # tim kiem xe
 def search_vehicle():
@@ -601,8 +557,7 @@ def detail_admin():
         print("Không tìm thấy thông tin khách hàng!")
 
 # detail_admin()
-
-# hiển thi chi tiết cho người dùng
+#chi tiết người dùng
 def detail_client():
     username= input("nhập tên khách hàng: ")
     try:
@@ -614,19 +569,12 @@ def detail_client():
                     print("ID: ", p['id'])
                     print("Tên: ", p['name'])
                     print("Danh sách xe đã thuê: ")
-                    for vehicle_id in p['ListVehical']:
-                        vehicle_data = get_vehicle_data(vehicle_id)
-                        if vehicle_data is not None:
-                            print("- Tên xe: ", vehicle_data['name'])
-                            print("- Giá tiền: ", vehicle_data['cost'])
-                            print("- Số lượng: ", vehicle_data['quantity'])
-                            print("- Thời gian nhập: ", vehicle_data['time'])
-                        else:
-                            print("- Xe không tồn tại!")
-                    return
-            print("Không tìm thấy thông tin khách hàng!")
-    except FileNotFoundError:
+                for vehicle_id in p['ListVehical']:
+                    get_vehicle_data()
+                return
         print("Không tìm thấy thông tin khách hàng!")
+    except FileNotFoundError:
+            print("Không tìm thấy thông tin khách hàng!")
 def menuLogin():
     # thêm switch case vào
     print("-----------------------")
