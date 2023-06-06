@@ -74,7 +74,7 @@ def hash_password(password):
     return hashed_password
 def autoCreateClient():
     print("Đăng ký")
-    for i in range(100,300):
+    for i in range(0,30):
         Name = "tuan" + str(i)
         Username = "tuan"+ str(i)
         Password = "tuan"+ str(i)
@@ -97,14 +97,13 @@ def autoCreateClient():
         print("đang khởi tạo client....")
     print("hoàn tất")
 
-# autoCreateClient()
+autoCreateClient()
 def autoCreateVehical():
-    for i in range(0,4000):
+    for i in range(0,30):
         data = {}
         data['vehical'] = []
         # tạo 1 id ngẫu nhiên trong khoảng 1 - 1000
         id = random.randint(1, 1000)
-        print("- Nhập thông tin xe: ")
         # Nhập tên xe
         name = "toyota" + str(i)
         status = 1
@@ -124,5 +123,6 @@ def autoCreateVehical():
         })
         with open('data/vehical/' + name + '.txt', 'w') as f:
             json.dump(data, f)
-        print("-> Bạn đã thêm xe thành công!")
-# autoCreateVehical()
+            print("đang khởi tạo xe")
+    print("-> Bạn đã thêm xe thành công!")
+autoCreateVehical()
