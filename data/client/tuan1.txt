@@ -1,1 +1,0 @@
-{"client": [{"id": 0.9384311282379624, "name": "tuan0", "username": "tuan0", "password": "$2b$12$vCZzmgrDA9YEGThOf.RCCOFMsmPNS.qkXXTFlYiRAeIyhn/ClSg9O"}, {"id": 0.281802267117629, "name": "tuan1", "username": "tuan1", "password": "$2b$12$73k5C2StvHkXV9qJxngNxeghPlwYp6aJvhvztNjpOXzoA3pz0WhLe"}]}

@@ -385,27 +385,33 @@ def menuChoiceForAdmin():
             break
         else:
             print("Lựa chọn không hợp lệ!")
-
+def check_list_existence(file_name):
+    with open(file_name, "r") as file:
+        try:
+            data = json.load(file)
+            if isinstance(data, dict) and "ListVehical" in data:
+                if isinstance(data["ListVehical"], list):
+                    return True
+            return False
+        except json.JSONDecodeError:
+            return False
 def rentVehical():
-    listVehical = []
     vehical = Vehical()
     folder_path = "data/vehical"
     # Lấy danh sách tên file trong thư mục
     file_names = os.listdir(folder_path)
     # lấy ra tên các file và chạy for để lấy giá trị và gán vào đối tượng vehical
-    for file_name in file_names:
-        with open('data/vehical/' + file_name, 'r') as f:
-            data = json.load(f)
-        for p in data['vehical']:
-            vehical.id = p['id']
-            vehical.name = p['name']
-            vehical.cost = p['cost']
-            vehical.status = p['status']
-            vehical.time = p['time']
-            vehical.quantity = p['quantity']
-            listVehical.append(vehical)
     selectName = input("Nhập tên xe cần thuê: ")
     selectQuantity = input("Nhập số lượng xe cần thuê: ")
+    with open('data/vehical/' + selectName + ".txt", 'r') as f:
+        data = json.load(f)
+    for p in data['vehical']:
+        vehical.id = p['id']
+        vehical.name = p['name']
+        vehical.cost = p['cost']
+        vehical.status = p['status']
+        vehical.time = p['time']
+        vehical.quantity = p['quantity']
     for filename in os.listdir('data/vehical/'):
         if filename.endswith('.txt'):
             with open('data/vehical/' + filename ) as f:
@@ -419,7 +425,6 @@ def rentVehical():
                         print("Xe đã hết vui lòng chọn xe khác")
                     else:
                         with open('data/client/' + userObj.username + '.txt', 'r') as userfile:
-                            dataClient = json.load(userfile)
                             newDataVehical = {
                                 "id": dataVehical["vehical"][0]["id"],
                                 "name": dataVehical["vehical"][0]["name"],
@@ -427,11 +432,30 @@ def rentVehical():
                                 "quantity": selectQuantity,
                                 "time": time
                             }
-                        dataClient["ListVehical"] = newDataVehical
-                        with open('data/client/' + userObj.username + '.txt', 'w') as f:
-                            json.dump(dataClient, f)
-                            print("Thuê xe thành công")
-                        break
+                            new_dict = newDataVehical
+                        if(check_list_existence('data/client/' + userObj.username + '.txt')) == True:
+                            dataClient = json.load(userfile)
+                            # Thêm từ điển mới vào danh sách
+                            dataClient["ListVehical"].append(new_dict)
+                            # Ghi lại đối tượng Python đã được mở rộng vào tệp tin
+                            with open('data/client/' + userObj.username + '.txt', "w") as file:
+                                json.dump(dataClient, file)
+                                print("Thêm xe thành công")
+                        else:
+                            with open('data/client/' + userObj.username + '.txt', 'r') as userfile:
+                                dataClient = json.load(userfile)
+                                newDataVehical = {
+                                    "id": dataVehical["vehical"][0]["id"],
+                                    "name": dataVehical["vehical"][0]["name"],
+                                    "cost": dataVehical["vehical"][0]["cost"],
+                                    "quantity": selectQuantity,
+                                    "time": time
+                                }
+                            dataClient["ListVehical"] = newDataVehical
+                            with open('data/client/' + userObj.username + '.txt', 'w') as f:
+                                json.dump(dataClient, f)
+                                print("Thuê xe thành công")
+                            break
     if not found:
         print('không tìm thấy xe có tên ',selectName)
 def showAllClient():

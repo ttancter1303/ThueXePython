@@ -125,4 +125,51 @@ def autoCreateVehical():
             json.dump(data, f)
             print("đang khởi tạo xe")
     print("-> Bạn đã thêm xe thành công!")
-autoCreateVehical()
+# autoCreateVehical()
+def autoRentVehical():
+    for i in range(2,10):
+        vehical = Vehical()
+        folder_path = "data/vehical"
+        # Lấy danh sách tên file trong thư mục
+        file_names = os.listdir(folder_path)
+        # lấy ra tên các file và chạy for để lấy giá trị và gán vào đối tượng vehical
+        selectName = "toyota" + str(i)
+        selectQuantity = 2
+        with open('data/vehical/' + selectName + ".txt", 'r') as f:
+            data = json.load(f)
+        for p in data['vehical']:
+            vehical.id = p['id']
+            vehical.name = p['name']
+            vehical.cost = p['cost']
+            vehical.status = p['status']
+            vehical.time = p['time']
+            vehical.quantity = p['quantity']
+        for filename in os.listdir('data/vehical/'):
+            if filename.endswith('.txt'):
+                with open('data/vehical/' + filename ) as f:
+                    try:
+                        dataVehical = json.load(f)
+                    except json.decoder.JSONDecodeError:
+                        continue
+                    if dataVehical['vehical'][0]['name'] == selectName:
+                        found = True
+                        if(dataVehical['vehical'][0]['status'] == 0):
+                            print("Xe đã hết vui lòng chọn xe khác")
+                        else:
+                            with open('data/client/' + "tuan"+str(i)+ '.txt', 'r') as userfile:
+                                dataClient = json.load(userfile)
+                                newDataVehical = {
+                                    "id": dataVehical["vehical"][0]["id"],
+                                    "name": dataVehical["vehical"][0]["name"],
+                                    "cost": dataVehical["vehical"][0]["cost"],
+                                    "quantity": selectQuantity,
+                                    "time": time
+                                }
+                            dataClient["ListVehical"] = newDataVehical
+                            with open('data/client/' +"tuan"+str(i)+ '.txt', 'w') as f:
+                                json.dump(dataClient, f)
+                                print("Thuê xe thành công")
+                            break
+        if not found:
+            print('không tìm thấy xe có tên ',selectName)
+# autoRentVehical()
