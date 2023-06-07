@@ -431,6 +431,14 @@ def rentVehical():
                             }
                             new_dict = newDataVehical
                         if(check_list_existence('data/client/' + userObj.username + '.txt')) == True:
+                            # TODO: Đang lỗi ở chỗ này chức năng của hàm này là append thêm xe mới vào là đang gặp lỗi
+                            # username:tuan11
+                            # password:tuan11
+
+
+
+                            # thêm cái openwith để mở file
+                            # sửa lại dịnh dạng của ListVehical từ dic sang list(chưa làm đc)
                             dataClient = json.load(userfile)
                             # Thêm từ điển mới vào danh sách
                             dataClient["ListVehical"].append(new_dict)
@@ -438,22 +446,26 @@ def rentVehical():
                             with open('data/client/' + userObj.username + '.txt', "w") as file:
                                 json.dump(dataClient, file)
                                 print("Thêm xe thành công")
+
+
+
                         else:
                             with open('data/client/' + userObj.username + '.txt', 'r') as userfile:
                                 dataClient = json.load(userfile)
-                                newDataVehical = {
+                                # thêm cái openwith để mở file
+                                # sửa lại dịnh dạng của ListVehical từ dic sang list(chưa làm đc)
+                                newDataVehical = [{
                                     "id": dataVehical["vehical"][0]["id"],
                                     "name": dataVehical["vehical"][0]["name"],
                                     "cost": dataVehical["vehical"][0]["cost"],
                                     "quantity": selectQuantity,
                                     "time": time
-                                }
+                                }]
                             dataClient["ListVehical"] = newDataVehical
                             with open('data/client/' + userObj.username + '.txt', 'w') as f:
                                 json.dump(dataClient, f)
                                 print("Thuê xe thành công")
                             break
-
     if not found:
         print('không tìm thấy xe có tên ',selectName)
 def showAllClient():
