@@ -152,7 +152,7 @@ def addVehical():
     data = {}
     data['vehical'] = []
     # tạo 1 id ngẫu nhiên trong khoảng 1 - 1000
-    id = random.randint(1, 1000)
+    id = random.randint(1, 100000000)
     print("- Nhập thông tin xe: ")
     # Nhập tên xe
     while True:
@@ -277,10 +277,7 @@ def editVehical():
 
 # Xóa dữ liệu xe
 def deleteVehical():
-    id = input("Nhập ID xe cần xóa: ")
-    if not id.isdigit():
-        print("-> ID phải là một số nguyên. Vui lòng nhập lại!")
-        return
+    names = input("Nhập ten xe cần xóa: ")
     found = False
     for filename in os.listdir('data/vehical'):
         with open('data/vehical/' + filename) as f:
@@ -288,7 +285,7 @@ def deleteVehical():
                 data = json.load(f)
             except json.decoder.JSONDecodeError:
                 continue
-            if data['vehical'][0]['id'] == int(id):
+            if data['vehical'][0]['name'] == names:
                 found = True
                 name = data['vehical'][0]['name']
                 break
@@ -456,6 +453,7 @@ def rentVehical():
                                 json.dump(dataClient, f)
                                 print("Thuê xe thành công")
                             break
+
     if not found:
         print('không tìm thấy xe có tên ',selectName)
 def showAllClient():
@@ -579,9 +577,6 @@ def detail_admin():
             print("Không tìm thấy thông tin khách hàng!")
     except FileNotFoundError:
         print("Không tìm thấy thông tin khách hàng!")
-
-# detail_admin()
-#chi tiết người dùng
 def detail_client():
     username= input("nhập tên khách hàng: ")
     try:

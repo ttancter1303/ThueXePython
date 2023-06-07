@@ -97,9 +97,9 @@ def autoCreateClient():
         print("đang khởi tạo client....")
     print("hoàn tất")
 
-autoCreateClient()
+# autoCreateClient()
 def autoCreateVehical():
-    for i in range(0,30):
+    for i in range(9001,20000):
         data = {}
         data['vehical'] = []
         # tạo 1 id ngẫu nhiên trong khoảng 1 - 1000
@@ -125,7 +125,7 @@ def autoCreateVehical():
             json.dump(data, f)
             print("đang khởi tạo xe")
     print("-> Bạn đã thêm xe thành công!")
-# autoCreateVehical()
+autoCreateVehical()
 def autoRentVehical():
     for i in range(2,10):
         vehical = Vehical()
