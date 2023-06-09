@@ -87,21 +87,21 @@ def autoCreateClient():
         userObj.name = Name
         userObj.username = Username
         userObj.password = hashed_password_str
-        open("data/client/" + userObj.username + ".txt",'w')
-        with open("data/client/" + userObj.username + ".txt") as json_file:
+        open("data/client/" + userObj.username + ".json",'w')
+        with open("data/client/" + userObj.username + ".json") as json_file:
             data['client'].append({
                 "id": userObj.id,
                 "name": userObj.name,
                 "username": userObj.username,
                 "password": userObj.password})
-        with open("data/client/" + userObj.username + ".txt", 'w') as outfile:
+        with open("data/client/" + userObj.username + ".json", 'w') as outfile:
             json.dump(data, outfile)
         print("đang khởi tạo client....")
     print("hoàn tất")
 
 autoCreateClient()
 def autoCreateVehical():
-    for i in range(0,20000):
+    for i in range(0,20):
         data = {}
         data['vehical'] = []
         # tạo 1 id ngẫu nhiên trong khoảng 1 - 1000
@@ -123,11 +123,11 @@ def autoCreateVehical():
             'quantity': quantity,
             'time': time
         })
-        with open('data/vehical/' + name + '.txt', 'w') as f:
+        with open('data/vehical/' + name + '.json', 'w') as f:
             json.dump(data, f)
             print("đang khởi tạo xe")
     print("-> Bạn đã thêm xe thành công!")
-# autoCreateVehical()
+autoCreateVehical()
 def autoRentVehical():
     for i in range(2,10):
         vehical = Vehical()
@@ -137,7 +137,7 @@ def autoRentVehical():
         # lấy ra tên các file và chạy for để lấy giá trị và gán vào đối tượng vehical
         selectName = "toyota" + str(i)
         selectQuantity = 2
-        with open('data/vehical/' + selectName + ".txt", 'r') as f:
+        with open('data/vehical/' + selectName + ".json", 'r') as f:
             data = json.load(f)
         for p in data['vehical']:
             vehical.id = p['id']
@@ -147,7 +147,7 @@ def autoRentVehical():
             vehical.time = p['time']
             vehical.quantity = p['quantity']
         for filename in os.listdir('data/vehical/'):
-            if filename.endswith('.txt'):
+            if filename.endswith('.json'):
                 with open('data/vehical/' + filename ) as f:
                     try:
                         dataVehical = json.load(f)
@@ -158,7 +158,7 @@ def autoRentVehical():
                         if(dataVehical['vehical'][0]['status'] == 0):
                             print("Xe đã hết vui lòng chọn xe khác")
                         else:
-                            with open('data/client/' + "tuan"+str(i)+ '.txt', 'r') as userfile:
+                            with open('data/client/' + "tuan"+str(i)+ '.json', 'r') as userfile:
                                 dataClient = json.load(userfile)
                                 newDataVehical = {
                                     "id": dataVehical["vehical"][0]["id"],
@@ -168,7 +168,7 @@ def autoRentVehical():
                                     "time": time
                                 }
                             dataClient["ListVehical"] = newDataVehical
-                            with open('data/client/' +"tuan"+str(i)+ '.txt', 'w') as f:
+                            with open('data/client/' +"tuan"+str(i)+ '.json', 'w') as f:
                                 json.dump(dataClient, f)
                                 print("Thuê xe thành công")
                             break

@@ -1,1 +1,0 @@
-{"vehical": [{"id": 10, "name": "toyota26", "status": 1, "cost": 300, "quantity": 90, "time": "06/06/2023"}]}
