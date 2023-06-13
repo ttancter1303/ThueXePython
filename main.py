@@ -1,12 +1,13 @@
+from tkinter import ALL
 import datetime
 import json
 import random
-import re 
+import re
 import bcrypt
 import os
 import matplotlib.pyplot as plt
-
-
+from prettytable import PrettyTable, ALL
+from operator import itemgetter
 data = {}
 data['client'] = []
 tg = datetime.datetime.now()
@@ -94,7 +95,7 @@ def login():
                 data = json.load(json_file)
                 for p in data['client']:
                     if p['username'] == Username and bcrypt.checkpw(Password.encode('utf-8'),p['password'].encode('utf-8')):
-                        print("Login succesfully !")
+                        print("Đăng nhập thành công !")
                         userObj.id = p['id']
                         userObj.name = p['name']
                         userObj.username = p['username']
@@ -287,13 +288,7 @@ def editVehical():
             json.dump(data, f)
         print("-> Đã cập nhật thông tin xe!")
     else:
-        print("-> Không tìm thấy xe có ID!", id)
-# def sapxep():
-# #  sắp xêp theo giá tiền theo chiều tăng dần
-#
-# #  sắp xếp theo chiều giảm dần
-
-# Xóa dữ liệu xe
+        print("-> Không tìm thấy xe !")
 def deleteVehical():
     names = input("Nhập tên xe cần xóa: ")
     found = False
@@ -311,6 +306,47 @@ def deleteVehical():
         filename = 'data/vehical/' + name + '.json'
         os.remove(filename)
         print("-> Xóa xe thành công!")
+
+
+def bubble_sort(arr):
+    n = len(arr)
+    # Lặp qua từng phần tử của danh sách
+    for i in range(n):
+        # Lặp qua các phần tử khác của danh sách
+        for j in range(0, n - i - 1):
+            # So sánh hai phần tử
+            if float(arr[j]['vehical'][0]['cost']) > float(arr[j + 1]['vehical'][0]['cost']):
+                # Nếu phần tử hiện tại lớn hơn phần tử tiếp theo, hoán đổi chúng
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+
+
+
+def sort_vehical():
+    folder_path = "data/vehical"
+    file_names = os.listdir(folder_path)
+    file_names = os.listdir(folder_path)
+    table = PrettyTable()
+    table.hrules = ALL  # thêm đường gạch dưới mỗi đối tượng
+    table.field_names = ["id", 'name', 'cost', 'status', 'time', 'quantity']
+    data = []
+    for filename in file_names:
+        if filename.endswith('.json'):
+            with open('data/vehical/' + filename, 'r') as f:
+                data.append(json.load(f))
+    bubble_sort(data)
+    print("xe sau khi sắp xếp theo giá tiền ")
+    for p in data:
+        for vehicle in p['vehical']:
+            if vehicle['status'] == 1:
+                status = "còn xe"
+            else:
+                status = "hết xe"
+            table.add_row(
+                [vehicle['id'], vehicle['name'], vehicle['cost'], status, vehicle['time'], vehicle['quantity']])
+
+    print(table)
+
+
 def search():
     print('tìm kiếm xe')
     name = input('nhập tên xe cần tìm kiếm: ')
@@ -370,16 +406,60 @@ def thongke():
     for i, count in enumerate(list(vehicleCount.values())):
         plt.text(i, count + 0.1, str(count), ha='center', va='bottom')
     plt.show()
+# xem chi tiết
+def get_vehicle_data():
+    names = input("Nhập tên xe cần xem thông tin: ")
+    found = False
+    for filename in os.listdir('data/vehical/'):
+        with open('data/vehical/' + filename) as f:
+            try:
+                data = json.load(f)
+            except json.decoder.JSONDecodeError:
+                continue
+            if data['vehical'][0]['name'] == names:
+                found = True
+                print("- Thông tin xe :")
+                print(" + Tên xe:", data['vehical'][0]['name'])
+                if data['vehical'][0]['status'] == "1":
+                    print(" + Tình trạng: Còn hàng")
+                else:
+                    print(" + Tình trạng: Hết hàng")
+                print(" + Giá tiền:", data['vehical'][0]['cost'])
+                print(" + Số lượng:", data['vehical'][0]['quantity'])
+                print(" + Thời gian nhập: ", data['vehical'][0]['time'])
+                break
 
+    if not found:
+        print("-> Không tìm thấy xe có tên!", names)
+#  danh sách xe
+def listVehical():
+    folder_path = "data/vehical/"
+    file_names = os.listdir(folder_path)
+    table = PrettyTable()
+    table.field_names = ["id", 'name', 'cost', 'status', 'time', 'quantity']
+    table.hrules = ALL  # thêm đường gạch dưới mỗi đối tượng
+    for file_name in file_names:
+        with open('data/vehical/' + file_name, 'r') as f:
+            data = json.load(f)
+        for p in data['vehical']:
+
+            if p['status'] == 1:
+                status = "còn xe"
+            else:
+                status = "hết xe"
+            table.add_row([p['id'], p['name'], p['cost'], status, p['time'], p['quantity']])
+    print(table)
 def menuChoiceForAdmin():
     while True:
         print("-----------------------")
         print("1. Thêm xe mới")
         print("2. Sửa xe")
         print("3. Xóa xe")
-        print("4. Tìm kiếm xe ")
-        print("5. thống kê số lượng mỗi xe")
-        print("6. Tìm kiếm người dùng")
+        print("4. Sắp xếp")
+        print("5. Tìm kiếm xe ")
+        print("6. Thống kê")
+        print("7. Danh sách xe ")
+        print("8. Chi tiết xe")
         print("0. Thoát chương trình")
         print("-----------------------")
         choice = input("Nhập lựa chọn: ")
@@ -390,11 +470,15 @@ def menuChoiceForAdmin():
         elif choice == "3":
             deleteVehical()
         elif choice == "4":
-            search()
+            sort_vehical()
         elif choice == "5":
-            thongke()
+            search()
         elif choice == "6":
-            detail_client()
+            thongke()
+        elif choice == "7":
+            listVehical()
+        elif choice == "8":
+            get_vehicle_data()
         elif choice == "0":
             print("Thoát chương trình.....")
             break
@@ -504,154 +588,16 @@ def rentVehical():
                                     "time": time
                                 }]
                             newDataVehicalLoad["ListClient"] = newClientDataForRentVehical
-                            print(newDataVehicalLoad)
+                            # print(newDataVehicalLoad)
                             with open('data/vehical/' + selectName +".json", 'w') as f:
                                 json.dump(newDataVehicalLoad, f)
-                                print("cập nhập lại số xe thành công")
+                                # print("cập nhập lại số xe thành công")
             # Trừ số lượng xe đi
             dataVehical['vehical'][0]['quantity'] = dataVehical['vehical'][0]['quantity'] - selectQuantity
             with open('data/vehical/' + selectName +".json", 'w') as f:
                 json.dump(dataVehical, f)
     else:
         print(selectName + "Không tồn tại vui lòng nhập xe khác")
-def showAllClient():
-    pass
-# chi tiết thông tin xe
-def get_vehical_data():
-    id = input("Nhập ID xe cần xem thông tin: ")
-    if not id.isdigit():
-        print("-> ID phải là một số nguyên. Vui lòng nhập lại!")
-        return
-    found = False
-    for filename in os.listdir('data/vehical/'):
-        with open('data/vehical/' + '/' + filename) as f:
-            try:
-                data = json.load(f)
-            except json.decoder.JSONDecodeError:
-                continue
-            if data['vehical'][0]['id'] == int(id):
-                found = True
-                break
-
-    if found:
-        print("- Chi tiết xe có mã", id, "là: ")
-        print(" + Tên xe:", data['vehical'][0]['name'])
-        if data['vehical'][0]['status'] == 1:
-            print(" + Tình trạng: Còn hàng")
-        else:
-            print(" + Tình trạng: Hết hàng")
-        print(" + Giá tiền:", data['vehical'][0]['cost'])
-        print(" + Số lượng:", data['vehical'][0]['quantity'])
-        print(" + Thời gian nhập: ", data['vehical'][0]['time'])
-    else:
-        print("-> Không tìm thấy xe có mã!", id)
-
-# chi tiết người dùng cho admin
-
-# tim kiem xe
-def search_vehicle():
-    id = input("Nhập ID xe cần tìm: ")
-    if not id.isdigit():
-        print("-> ID phải là một số nguyên. Vui lòng nhập lại!")
-        return
-
-    found = False
-    for filename in os.listdir('data/vehicle'):
-        with open('data/vehicle/' + filename) as f:
-            try:
-                data = json.load(f)
-            except json.decoder.JSONDecodeError:
-                continue
-            if data['vehicle'][0]['id'] == int(id):
-                found = True
-                name = data['vehicle'][0]['name']
-                break
-
-    if found:
-        with open('data/vehicle/' + name + '.json', 'r') as f:
-            data = json.load(f)
-        print("- Thông tin xe ban đầu:")
-        print(" + Tên xe:", data['vehicle'][0]['name'])
-        if data['vehicle'][0]['status'] == 1:
-            print(" + Tình trạng: Còn hàng")
-        else:
-            print(" + Tình trạng: Hết hàng")
-        print(" + Giá tiền:", data['vehicle'][0]['cost'])
-        print(" + Số lượng:", data['vehicle'][0]['quantity'])
-        print(" + Thời gian nhập:", data['vehicle'][0]['time'])
-    else:
-        print("Không tìm thấy xe với ID đã nhập.")
-
-#hiện thi thông tin xe
-def get_vehicle_data():
-    id = input("Nhập ID xe cần xem thông tin: ")
-    if not id.isdigit():
-        print("-> ID phải là một số nguyên. Vui lòng nhập lại!")
-        return None
-
-    found = False
-    for filename in os.listdir('data/vehical/'):
-        with open('data/vehical/' + filename) as f:
-            try:
-                data = json.load(f)
-            except json.decoder.JSONDecodeError:
-                continue
-            if data['vehical'][0]['id'] == int(id):
-                found = True
-                break
-
-    if found:
-        print("- Chi tiết xe có mã", id, "là: ")
-        print(" + Tên xe:", data['vehical'][0]['name'])
-        if data['vehical'][0]['status'] == "1":
-            print(" + Tình trạng: Còn hàng")
-        else:
-            print(" + Tình trạng: Hết hàng")
-        print(" + Giá tiền:", data['vehical'][0]['cost'])
-        print(" + Số lượng:", data['vehical'][0]['quantity'])
-        print(" + Thời gian nhập: ", data['vehical'][0]['time'])
-    else:
-        print("-> Không tìm thấy xe có mã!", id)
-
-        #hiện thi chi tiết cho admin xem
-
-def detail_admin():
-    username = input("Nhập tên người dùng: ")
-    try:
-        with open('data/client/' + username + '.json') as json_file:
-            data = json.load(json_file)
-            for p in data['client']:
-                if p['username'] == username:
-                    print("Thông tin chi tiết của khách hàng:")
-                    print("ID: ", p['id'])
-                    print("Tên: ", p['name'])
-                    print("Username: ", p['username'])
-                    print("Password: ", p['password'])
-                    print("Danh sách xe đã thuê: ")
-
-                    for vehicle_id in p['ListVehical']:
-                        get_vehicle_data()
-                    return
-            print("Không tìm thấy thông tin khách hàng!")
-    except FileNotFoundError:
-        print("Không tìm thấy thông tin khách hàng!")
-def detail_client():
-    username= input("nhập tên khách hàng: ")
-    try:
-        with open('data/client/' + username + '.json') as json_file:
-            data = json.load(json_file)
-            for p in data['client']:
-                if p['username'] == username:
-                    print("Thông tin chi tiết của khách hàng:")
-                    print("ID: ", p['id'])
-                    print("Tên: ", p['name'])
-                    print("Danh sách xe đã thuê: ")
-                for vehicle_id in p['ListVehical']:
-                    get_vehicle_data()
-                return
-        print("Không tìm thấy thông tin khách hàng!")
-    except FileNotFoundError:
-            print("Không tìm thấy thông tin khách hàng!")
 def menuLogin():
     # thêm switch case vào
     print("-----------------------")
@@ -689,6 +635,3 @@ def Main():
         # đăng nhập user
         mainMenuClient()
 Main()
-
-
-
