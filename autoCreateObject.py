@@ -127,7 +127,7 @@ def autoCreateVehical():
             json.dump(data, f)
             print("đang khởi tạo xe")
     print("-> Bạn đã thêm xe thành công!")
-autoCreateVehical()
+# autoCreateVehical()
 def autoRentVehical():
     for i in range(2,10):
         vehical = Vehical()
@@ -175,3 +175,4 @@ def autoRentVehical():
         if not found:
             print('không tìm thấy xe có tên ',selectName)
 # autoRentVehical()
+open('data/doanhThu.json','w')

@@ -1,1 +1,1 @@
-{"client": [{"id": 0.10350386111311938, "name": "tuan3", "username": "tuan3", "password": "$2b$12$rR7CTRy709CESBWngu6JkuiDDbPO5twFcXlRso7NA.oG0Zrsewje2"}]}
+{"client": [{"id": 0.10350386111311938, "name": "tuan3", "username": "tuan3", "password": "$2b$12$rR7CTRy709CESBWngu6JkuiDDbPO5twFcXlRso7NA.oG0Zrsewje2"}], "ListVehical": [{"id": 525, "name": "toyota19", "cost": 319, "quantity": 5, "time": "15/06/2023"}, {"id": 414, "name": "toyota15", "cost": 315, "quantity": 3, "time": "15/06/2023"}]}

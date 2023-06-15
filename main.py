@@ -449,6 +449,21 @@ def listVehical():
                 status = "hết xe"
             table.add_row([p['name'], p['cost'], status, p['time'], p['quantity']])
     print(table)
+def doanhThu():
+    sum = 0
+    folder_path = "data/doanhThu.json"
+    table = PrettyTable()
+    table.field_names = [ 'client name', 'vehical', 'cost', 'quantity', 'time']
+    table.hrules = ALL  # thêm đường gạch dưới mỗi đối tượng
+    with open(folder_path,'r') as readFile:
+        newData = json.load(readFile)
+        for p in newData["RentHistory"]:
+            table.add_row([p['name'], p['name_vehical'], p['cost'], p['quantity'], p['time']])
+            sum = sum + (p['cost'] * p['quantity'])
+    print(table,"\n")
+    print('--------------------------')
+    print("| Tổng doanh thu : ",sum,"($)|")
+
 def menuChoiceForAdmin():
     while True:
         print("-----------------------")
@@ -459,7 +474,7 @@ def menuChoiceForAdmin():
         print("5. Tìm kiếm xe ")
         print("6. Thống kê")
         print("7. Danh sách xe ")
-        # print("8. Chi tiết xe")
+        print("8. Doanh thu ")
         print("0. Thoát chương trình")
         print("-----------------------")
         choice = input("Nhập lựa chọn: ")
@@ -477,8 +492,8 @@ def menuChoiceForAdmin():
             thongke()
         elif choice == "7":
             listVehical()
-        # elif choice == "8":
-        #     get_vehicle_data()
+        elif choice == "8":
+            doanhThu()
         elif choice == "0":
             print("Thoát chương trình.....")
             break
@@ -569,29 +584,28 @@ def rentVehical():
                             json.dump(dataClient, f)
                             print("Thuê xe thành công")
                     # đoạn này là cập nhập thêm ListClient cho vehical được thuê
-                    with open('data/vehical/' + selectName + ".json") as f:
-                        newDataVehicalLoad = json.load(f)
-                        if "ListClient" in newDataVehicalLoad:
-                            # nếu đã tồn tại key "ListClient" thì lấy list đó ra và append dic mới vào"
-                            newDataVehicalLoad["ListClient"].append(newClientDataForRentVehical)
-                            with open('data/vehical/' + selectName +".json", "w") as file:
+                    new_dict1 = {
+                        "user_id": clientObj.id,
+                        "name": clientObj.name,
+                        "name_vehical": dataVehical["vehical"][0]["name"],
+                        "cost": dataVehical["vehical"][0]["cost"],
+                        "quantity": selectQuantity,
+                        "time": time
+                    }
+                    with open('data/doanhThu.json','r') as f:
+                        content = f.read()
+                        if len(content) == 0:
+                            newDataVehicalLoad = {}
+                            newClientDataForRentVehical = [new_dict1]
+                            newDataVehicalLoad["RentHistory"] = newClientDataForRentVehical
+                            with open('data/doanhThu.json', 'w') as file:
                                 json.dump(newDataVehicalLoad, file)
                         else:
-                            # nếu chưa tồn tại "ListClient" thì tạo mới và push data vào
-                            with open('data/vehical/' + selectName +".json", 'r') as userfile:
-                                newDataVehicalLoad = json.load(userfile)
-                                newClientDataForRentVehical = [{
-                                    "id": clientObj.id,
-                                    "name": clientObj.name,
-                                    "username": clientObj.username,
-                                    "quantity": selectQuantity,
-                                    "time": time
-                                }]
-                            newDataVehicalLoad["ListClient"] = newClientDataForRentVehical
-                            # print(newDataVehicalLoad)
-                            with open('data/vehical/' + selectName +".json", 'w') as f:
-                                json.dump(newDataVehicalLoad, f)
-                                # print("cập nhập lại số xe thành công")
+                            with open('data/doanhThu.json', 'r') as userfile:
+                                DataVehicalLoad = json.load(userfile)
+                                DataVehicalLoad["RentHistory"].append(new_dict1)
+                                with open('data/doanhThu.json', "w") as file:
+                                    json.dump(DataVehicalLoad, file)
             # Trừ số lượng xe đi
             dataVehical['vehical'][0]['quantity'] = dataVehical['vehical'][0]['quantity'] - selectQuantity
             with open('data/vehical/' + selectName +".json", 'w') as f:
