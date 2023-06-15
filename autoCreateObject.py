@@ -99,7 +99,7 @@ def autoCreateClient():
         print("đang khởi tạo client....")
     print("hoàn tất")
 
-autoCreateClient()
+# autoCreateClient()
 def autoCreateVehical():
     for i in range(0,20):
         data = {}
@@ -109,8 +109,8 @@ def autoCreateVehical():
         # Nhập tên xe
         name = "toyota" + str(i)
         status = 1
-        cost = 300
-        quantity = 90
+        cost = 300 + i
+        quantity = 90 + i
         # thời gian nhập xe tự động hiện theo ngày sẵn có
         tg = datetime.datetime.now()
         time = tg.strftime("%d/%m/%Y")

@@ -1,4 +1,4 @@
-from tkinter import ALL
+# from tkinter import ALL
 import datetime
 import json
 import random
@@ -436,7 +436,7 @@ def listVehical():
     folder_path = "data/vehical/"
     file_names = os.listdir(folder_path)
     table = PrettyTable()
-    table.field_names = ["id", 'name', 'cost', 'status', 'time', 'quantity']
+    table.field_names = [ 'name', 'cost($)', 'status', 'time', 'quantity']
     table.hrules = ALL  # thêm đường gạch dưới mỗi đối tượng
     for file_name in file_names:
         with open('data/vehical/' + file_name, 'r') as f:
@@ -447,7 +447,7 @@ def listVehical():
                 status = "còn xe"
             else:
                 status = "hết xe"
-            table.add_row([p['id'], p['name'], p['cost'], status, p['time'], p['quantity']])
+            table.add_row([p['name'], p['cost'], status, p['time'], p['quantity']])
     print(table)
 def menuChoiceForAdmin():
     while True:
@@ -459,7 +459,7 @@ def menuChoiceForAdmin():
         print("5. Tìm kiếm xe ")
         print("6. Thống kê")
         print("7. Danh sách xe ")
-        print("8. Chi tiết xe")
+        # print("8. Chi tiết xe")
         print("0. Thoát chương trình")
         print("-----------------------")
         choice = input("Nhập lựa chọn: ")
@@ -477,8 +477,8 @@ def menuChoiceForAdmin():
             thongke()
         elif choice == "7":
             listVehical()
-        elif choice == "8":
-            get_vehicle_data()
+        # elif choice == "8":
+        #     get_vehicle_data()
         elif choice == "0":
             print("Thoát chương trình.....")
             break
@@ -621,8 +621,31 @@ def menuLogin():
             menuLogin()
             break
 def mainMenuClient():
-    rentVehical()
+    while True:
+        print("-----------------------")
+        print("1. Show toàn bộ xe")
+        print("2. Sắp xếp xe theo giá tiền")
+        print("3. Tìm kiếm xe")
+        print("4. Thuê xe")
+        print("0. Thoát chương trình")
+        print("-----------------------")
+        choice = input("Nhập lựa chọn: ")
+        if choice == "1":
+            listVehical()
+        elif choice == "2":
+            sort_vehical()
+        elif choice == "3":
+            search()
+        elif choice == "4":
+            rentVehical()
 
+        elif choice == "0":
+            print("Đang thoát ...")
+            break
+        else:
+            print("Lựa chọn không hợp lệ vui lòng nhập lại.")
+            menuLogin()
+            break
 def mainMenuAdmin():
     print("main menu admin")
     menuChoiceForAdmin()
